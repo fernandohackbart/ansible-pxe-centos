@@ -120,13 +120,12 @@ virsh destroy dcos-pxe;virsh undefine dcos-pxe
  
 # Some other commands
 
-Insert a cdrom in the guest drive: `virsh change-media dcos-pxe hda --insert /opt/stage/CentOS-7-x86_64-DVD-1708.iso`
-Eject the cdrom: `virsh attach-disk dcos-pxe " " hda --type cdrom --mode readonly`
-Start a guest: `virsh start dcos-pxe`
-List the block devices of a guest: `virsh domblklist dcos-pxe`
-List the network devices of a guest: `virsh domiflist dcos-boot`
-
-Get the IP of a guest
+* Insert a cdrom in the guest drive: `virsh change-media dcos-pxe hda --insert /opt/stage/CentOS-7-x86_64-DVD-1708.iso`
+* Eject the cdrom: `virsh attach-disk dcos-pxe " " hda --type cdrom --mode readonly`
+* Start a guest: `virsh start dcos-pxe`
+* List the block devices of a guest: `virsh domblklist dcos-pxe`
+* List the network devices of a guest: `virsh domiflist dcos-boot`
+* Get the IP of a guest
 ```
 for mac in `virsh domiflist dcos-pxe |grep -o -E "([0-9a-f]{2}:){5}([0-9a-f]{2})"` ; do  ip n  |grep $mac  |grep -o -P "^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}" ; done
 ```
