@@ -1,4 +1,6 @@
-﻿I am creating the PXE server on a OpenSuSE tumbleweed desktop, so everything is Linux... 
+﻿I am creating the PXE server on a OpenSuSE tumbleweed desktop, so everything is Linux... Will use this to setup a DC/OS cluster with this...
+
+
 
 The PXE server will contain the following services:
 * Named
@@ -7,14 +9,14 @@ The PXE server will contain the following services:
 * Nginx
 
 
-# Downloads
+## Downloads
 ```
 mkdir -p /opt/stage
 cd /opt/stage
 curl http://mirror.isec.pt/CentOS/7/isos/x86_64/CentOS-7-x86_64-DVD-1708.iso -O CentOS-7-x86_64-DVD-1708.iso
 ```
 
-# Create a network in the host for the private use of the PXE process
+## Create a network in the host for the private use of the PXE process
 ```
 cat > /tmp/dcos-pxe-net.xml <<EOF
 <network>
@@ -29,7 +31,7 @@ EOF
 ```
 virsh net-create /tmp/dcos-pxe-net.xml
 ```
-# Create  the PXE guest
+## Create  the PXE guest
 ```
 rm -rf /opt/dcos/guests/dcos-pxe/
 mkdir -p /opt/dcos/guests/dcos-pxe/
@@ -97,7 +99,7 @@ The hosts_names is a list of guest to be installed, the mac addresses should mat
 ansible-playbook -i hosts dcos-pxe.yml
 ```
 
-# Now you can create other guests 
+## Now you can create other guests 
 
 ```
 rm -rf /opt/dcos/guests/dcos-boot/
@@ -116,14 +118,13 @@ virt-install \
  --network network=dcos-pxe-net,model=virtio,mac=52:54:00:e2:87:5c \
  --network=bridge:virbr0
  ```
-# To clean up the guests and start again 
+## To clean up the guests and start again 
 ```
 virsh destroy dcos-boot;virsh undefine dcos-boot
 virsh destroy dcos-pxe;virsh undefine dcos-pxe
  ```
 
- 
-# Some other commands
+## Some other commands
 
 * Insert a cdrom in the guest drive: `virsh change-media dcos-pxe hda --insert /opt/stage/CentOS-7-x86_64-DVD-1708.iso`
 * Eject the cdrom: `virsh attach-disk dcos-pxe " " hda --type cdrom --mode readonly`
