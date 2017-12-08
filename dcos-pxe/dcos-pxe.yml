@@ -3,12 +3,12 @@
   hosts: pxeservers
   remote_user: root
   roles:
-#     - common
-#     - ntp
-#     - bind
-##     - dns-client
-#     - dhcp    
-#     - tftp
-#     - tftp-centos7 
+     - common
+     - ntp
+     - bind
+#     - dns-client
+     - dhcp    
+     - tftp
+     - tftp-centos7 
      - kickstart
      - hosts-config
