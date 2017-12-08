@@ -1,0 +1,23 @@
+---
+- name: Install dhcp
+  package:
+    name: dhcp
+    state: latest
+
+- name: Create /etc/dhcp/dhcpd.conf
+  template:
+    src: dhcpd.conf
+    dest: /etc/dhcp/dhcpd.conf
+    owner: dhcpd
+    group: dhcpd
+    mode: 0600
+
+- name: Start dhcpd
+  service:
+    name: dhcpd
+    state: started
+
+- name: Enable dhcpd
+  service:
+    name: dhcpd
+    enabled: yes 

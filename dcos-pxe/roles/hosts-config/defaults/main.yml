@@ -1,0 +1,12 @@
+---
+hosts_role_types: ["boot","master","agent"]
+hosts_time_zone: "Europe/Lisbon"
+hosts_root_pw: "Welcome1"
+hosts_keyboard: "pt-latin1"
+hosts_lang: "en_US.UTF-8"
+hosts_distribution: "centos7"
+#List of hosts
+hosts_names: ["dcos-boot","dcos-master1","dcos-agent1"]
+hosts_ips: ["192.168.122.100","192.168.122.101","192.168.122.102"]
+hosts_mac_addrs: ["52:54:00:e2:87:5c","52:54:00:e2:87:5d","52:54:00:e2:87:5e"]
+hosts_roles: ["boot","master","agent"]

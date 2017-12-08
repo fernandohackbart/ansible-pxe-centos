@@ -1,0 +1,4 @@
+---
+dependencies:
+  - bind-defaults
+  - tftp-defaults

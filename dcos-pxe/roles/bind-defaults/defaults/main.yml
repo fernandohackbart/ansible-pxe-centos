@@ -1,0 +1,7 @@
+---
+#Get the local IP address
+bind_local_ip: "{{pxe_server_ip}}"
+bind_local_forwarder: "192.168.122.1"
+bind_local_network: "192.168.122/24"
+bind_local_zone_name: "prototype.local"
+bind_local_hostname: "dcos-pxe"

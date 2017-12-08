@@ -1,0 +1,28 @@
+---
+#- name: "Getting IP: {{ pxe_server_ip }}"
+#  debug:
+#    msg: "IP: {{ pxe_server_ip }}"
+- name: Stopping eth0
+  shell: ip addr del {{ pxe_server_ip }}/24 dev eth0
+  ignore_errors: yes
+
+- name: Setting default network interface IP to {{ pxe_server_ip }}
+  shell: ip addr add {{ pxe_server_ip }}/24 broadcast {{ dhcp_network_broadcast }} dev eth0 
+  
+- name: Setting default network interface IP to {{ pxe_server_ip }}
+  shell: ip link set eth0 up
+
+- name: Set hostname to {{ bind_local_hostname }}.{{ bind_local_zone_name }}
+  hostname:
+    name: "{{ bind_local_hostname }}.{{ bind_local_zone_name }}"
+
+- name: Disable SE Linux
+  selinux:
+    state: disabled 
+    
+- name: Stop firewalld
+  shell: systemctl stop firewalld
+
+- name: Disable firewalld
+  shell: systemctl disable firewalld
+

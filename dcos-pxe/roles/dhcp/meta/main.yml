@@ -1,0 +1,5 @@
+---
+dependencies:
+  - bind-defaults
+  - dhcp-defaults
+  - tftp-defaults

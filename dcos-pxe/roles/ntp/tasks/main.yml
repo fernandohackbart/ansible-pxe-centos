@@ -1,0 +1,23 @@
+---
+- name: Install NTP
+  package:
+    name: ntp
+    state: latest
+    
+- name: Stop ntp
+  service:
+    name: ntpd
+    state: stopped    
+
+- name: Configure NTP server to pool.ntp.org
+  shell: ntpdate pool.ntp.org
+    
+- name: Start ntp
+  service:
+    name: ntpd
+    state: started
+
+- name: Enable ntp
+  service:
+    name: ntpd
+    enabled: yes    

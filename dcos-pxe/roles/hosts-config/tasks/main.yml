@@ -1,0 +1,72 @@
+---
+
+- name: Creates /tmp/dns-zone-fragments directory
+  file: 
+    path: "/tmp/dns-zone-fragments"
+    state: directory
+    
+- name: Creates /tmp/dhcp-fragments directory
+  file: 
+    path: "/tmp/dhcp-fragments"
+    state: directory
+    
+- name: Create /tmp/dns-zone-fragments/{{ bind_local_zone_name }}
+  template:
+    src: zonefile.conf
+    dest: /tmp/dns-zone-fragments/1-{{ bind_local_zone_name }}
+    mode: 0600     
+    
+- name: Create /tmp/dhcp-fragments/dhcpd.conf
+  template:
+    src: dhcpd.conf
+    dest: /tmp/dhcp-fragments/1-dhcpd.conf
+    mode: 0600
+    
+- name: Configure hosts
+  include_tasks: configure-host.yml
+  with_together:
+     - "{{ hosts_names }}"
+     - "{{ hosts_ips }}"
+     - "{{ hosts_mac_addrs }}"  
+     - "{{ hosts_roles }}"
+     
+- name: Adding fragments from /tmp/dns-zone-fragments to /var/named/{{ bind_local_zone_name }}  
+  assemble:
+    src: /tmp/dns-zone-fragments
+    dest: /var/named/{{ bind_local_zone_name }}  
+    owner: named
+    group: named
+    mode: 0600  
+    
+- name: Adding fragments from /tmp/dhcp-fragments to /etc/dhcp/dhcpd.conf  
+  assemble:
+    src: /tmp/dhcp-fragments
+    dest: /etc/dhcp/dhcpd.conf  
+    owner: dhcpd
+    group: dhcpd
+    mode: 0600      
+    
+- name: Removes /tmp/dns-zone-fragments directory
+  file: 
+    path: "/tmp/dns-zone-fragments"
+    state: absent    
+
+- name: Removes /tmp/dhcp-fragments directory
+  file: 
+    path: "/tmp/dhcp-fragments"
+    state: absent   
+
+- name: Restart bind
+  service:
+    name: named
+    state: restarted
+    
+- name: Restart dhcpd
+  service:
+    name: dhcpd
+    state: restarted
+
+- name: Restart xinetd
+  service:
+    name: xinetd
+    state: restarted

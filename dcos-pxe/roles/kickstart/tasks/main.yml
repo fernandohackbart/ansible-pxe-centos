@@ -1,0 +1,81 @@
+---
+- name: Install epel-release
+  package:
+    name: epel-release
+    state: latest
+
+- name: Install nginx
+  package:
+    name: nginx
+    state: latest
+    
+- name: Create /etc/nginx/default.d/kickstart.conf
+  template:
+    src: kickstart.conf
+    dest: /etc/nginx/default.d/kickstart.conf
+    mode: 0600
+
+- name: Creates /kickstart directory
+  file: 
+    path: "/kickstart"
+    state: directory
+    
+- name: Creates /kickstart/stage directory
+  file: 
+    path: "/kickstart/stage"
+    state: directory
+
+- name: Create /kickstart/stage/resolv.conf
+  template:
+    src: resolv.conf
+    dest: /kickstart/stage/resolv.conf
+    owner: root
+    group: root
+    mode: 0644   
+
+- name: Create /kickstart/stage/ntp.conf
+  template:
+    src: ntp.conf
+    dest: /kickstart/stage/ntp.conf
+    owner: root
+    group: root
+    mode: 0644 
+
+- name: Create /kickstart/stage/overlay.conf
+  copy:
+    src: overlay.conf
+    dest: /kickstart/stage/overlay.conf
+    owner: root
+    group: root
+    mode: 0644 
+    
+- name: Create /kickstart/stage/docker.repo
+  copy:
+    src: docker.repo
+    dest: /kickstart/stage/docker.repo
+    owner: root
+    group: root
+    mode: 0644 
+        
+- name: Create /kickstart/stage/docker-override.conf
+  copy:
+    src: docker-override.conf
+    dest: /kickstart/stage/docker-override.conf
+    owner: root
+    group: root
+    mode: 0644
+    
+- name: Creates /kickstart/config directory
+  file: 
+    path: "/kickstart/config"
+    state: directory
+    
+- name: Start nginx
+  service:
+    name: nginx
+    state: started
+
+- name: Enable nginx
+  service:
+    name: nginx
+    enabled: yes    

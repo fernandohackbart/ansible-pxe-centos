@@ -1,0 +1,33 @@
+all:
+  hosts:
+    dcos-pxe
+  children:
+    pxeservers:
+      hosts:
+        192.168.122.166:
+      vars: 
+        hosts_role_types: ["boot","master","agent"]
+        hosts_time_zone: "Europe/Lisbon"
+        hosts_root_pw: "Welcome1"
+        hosts_keyboard: "pt-latin1"
+        hosts_lang: "en_US.UTF-8"
+        hosts_distribution: "centos7"
+        hosts_names: ["dcos-boot","dcos-master1","dcos-agent1"]
+        hosts_ips: ["192.168.30.100","192.168.30.101","192.168.30.102"]
+        hosts_mac_addrs: ["52:54:00:e2:87:5c","52:54:00:e2:87:5d","52:54:00:e2:87:5e"]
+        hosts_roles: ["boot","master","agent"]
+        bind_local_ip: "{{pxe_server_ip}}"
+        bind_local_forwarder: "192.168.122.1"
+        bind_local_network: "192.168.30/24"
+        bind_local_zone_name: "prototype.local"
+        bind_local_hostname: "dcos-pxe"
+        dhcp_router_ip: "192.168.30.1"
+        dhcp_network_broadcast: "192.168.30.255"
+        dhcp_network_subnet: "192.168.30.0"
+        dhcp_network_mask: "255.255.255.0"
+        dhcp_range_start: "192.168.30.50"
+        dhcp_range_end: "192.168.30.60"
+        kickstart_server_ip: "{{pxe_server_ip}}"
+        kickstart_server_port: "80"
+        tftp_server_ip: "{{pxe_server_ip}}"
+        pxe_server_ip: "192.168.30.2"

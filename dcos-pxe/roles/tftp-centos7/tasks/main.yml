@@ -1,0 +1,47 @@
+---
+- name: Creates /tftpboot/centos7 directory
+  file: 
+    path: "/tftpboot/centos7"
+    state: directory
+
+- name: Copy /usr/share/syslinux/pxelinux.0 to /tftpboot/centos7
+  copy: 
+    remote_src: True 
+    src: /usr/share/syslinux/pxelinux.0 
+    dest: /tftpboot/centos7
+
+- name: Copy /var/lib/tftpboot/mboot.c32 to /tftpboot/centos7
+  copy: 
+    remote_src: True 
+    src: /var/lib/tftpboot/mboot.c32 
+    dest: /tftpboot/centos7
+
+- name: Creates /centos7 directory
+  file: 
+    path: "/centos7"
+    state: directory
+    
+- name: Mount the ISO for CentOS7 on /centos7
+  mount:
+    path: /centos7
+    src: /dev/sr0
+    fstype: iso9660
+    opts: ro
+    state: mounted
+    
+- name: List /centos7/isolinux/*    
+  find:
+    paths: "/centos7/isolinux"
+    recurse: yes 
+    patterns: "*"
+  register: files_to_copy
+    
+- name: Copy /centos7/isolinux/* to /tftpboot/centos7
+  copy: 
+    src: "{{ item.path }}"
+    dest: /tftpboot/centos7
+    owner: root
+    mode: 0755
+    remote_src: True
+  with_items: 
+    "{{files_to_copy.files}}"

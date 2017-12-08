@@ -1,0 +1,88 @@
+---
+- name: Install xinetd
+  package:
+    name: xinetd*
+    state: latest
+
+- name: Install tftp
+  package:
+    name: tftp
+    state: latest
+
+- name: Install tftp-server 
+  package:
+    name: tftp-server 
+    state: latest
+    
+- name: Install syslinux-tftpboot* 
+  package:
+    name: syslinux-tftpboot* 
+    state: latest    
+
+- name: Creates /tftpboot directory
+  file: 
+    path: "/tftpboot"
+    state: directory
+    
+- name: Copy /usr/share/syslinux/pxelinux.0 to /tftpboot
+  copy: 
+    remote_src: True 
+    src: /usr/share/syslinux/pxelinux.0 
+    dest: /tftpboot
+
+- name: Copy /var/lib/tftpboot/mboot.c32 to /tftpboot
+  copy: 
+    remote_src: True 
+    src: /var/lib/tftpboot/mboot.c32 
+    dest: /tftpboot
+
+- name: Copy /var/lib/tftpboot/memdisk to /tftpboot
+  copy: 
+    remote_src: True 
+    src: /var/lib/tftpboot/memdisk 
+    dest: /tftpboot
+
+- name: Copy /var/lib/tftpboot/menu.c32  to /tftpboot
+  copy: 
+    remote_src: True 
+    src: /var/lib/tftpboot/menu.c32  
+    dest: /tftpboot
+    
+- name: Copy /var/lib/tftpboot/chain.c32  to /tftpboot
+  copy: 
+    remote_src: True 
+    src: /var/lib/tftpboot/chain.c32 
+    dest: /tftpboot
+
+- name: Creates /tftpboot/pxelinux.cfg directory
+  file: 
+    path: "/tftpboot/pxelinux.cfg"
+    state: directory
+
+- name: Create /tftpboot/pxelinux.cfg/default
+  template:
+    src: default
+    dest: /tftpboot/pxelinux.cfg/default
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Create /etc/xinetd.d/tftp
+  template:
+    src: tftp
+    dest: /etc/xinetd.d/tftp
+    owner: root
+    group: root
+    mode: 0644
+    
+- name: Start xinetd
+  service:
+    name: xinetd
+    state: started
+
+- name: Enable xinetd
+  service:
+    name: xinetd
+    enabled: yes   
+    
+

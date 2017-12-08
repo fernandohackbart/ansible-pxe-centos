@@ -1,0 +1,7 @@
+default menu.c32
+prompt1
+timeout 150
+display display.msg
+label local
+ menu label Boot local hard drive
+ localboot 0 

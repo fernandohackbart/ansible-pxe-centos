@@ -1,0 +1,7 @@
+---
+dependencies:
+  - common
+  - tftp-defaults
+  - kickstart-defaults
+  - dhcp-defaults 
+  - bind-defaults

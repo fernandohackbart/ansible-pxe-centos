@@ -1,0 +1,36 @@
+---
+- name: Install BIND
+  package:
+    name: bind
+    state: latest
+
+- name: Install bind-utils 
+  package:
+    name: bind-utils 
+    state: latest
+
+- name: Create /etc/named.conf
+  template:
+    src: named.conf
+    dest: /etc/named.conf
+    owner: root
+    group: root
+    mode: 0644
+    
+- name: Create /var/named/{{ bind_local_zone_name }}
+  template:
+    src: zonefile.conf
+    dest: /var/named/{{ bind_local_zone_name }}
+    mode: 0600   
+    
+- name: Start bind
+  service:
+    name: named
+    state: started
+
+- name: Enable bind
+  service:
+    name: named
+    enabled: yes   
+    
+ 

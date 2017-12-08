@@ -1,0 +1,14 @@
+---
+- name: "Install PXE server for DC/OS cluster"
+  hosts: pxeservers
+  remote_user: root
+  roles:
+#     - common
+#     - ntp
+#     - bind
+##     - dns-client
+#     - dhcp    
+#     - tftp
+#     - tftp-centos7 
+     - kickstart
+     - hosts-config

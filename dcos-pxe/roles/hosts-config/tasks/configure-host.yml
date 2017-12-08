@@ -1,0 +1,49 @@
+---
+- name: Defining variables with the values hostname:{{ item[0] }} ip address:{{ item[1] }} mac address:{{ item[2] }} role:{{ item[3] }}
+  set_fact:
+    host_name: "{{ item[0] }}"
+    host_ip: "{{ item[1] }}"
+    host_mac_addr: "{{ item[2] }}"
+    host_role: "{{ item[3] }}"
+    
+- name: Create /tftpboot/pxelinux.cfg/01-{{ host_mac_addr | regex_replace('[^a-z0-9-]', '-')}}
+  template:
+    src: tftp-host-file
+    dest: /tftpboot/pxelinux.cfg/01-{{ host_mac_addr | regex_replace('[^a-z0-9-]', '-') }}
+    mode: 0644
+    
+- name: Create /kickstart/config/{{ host_name }}.ks
+  template:
+    src: kickstart-boot-file
+    dest: /kickstart/config/{{ host_name }}.ks
+    mode: 0644
+  when:
+    host_role == "boot"
+
+- name: Create /kickstart/config/{{ host_name }}.ks
+  template:
+    src: kickstart-master-file
+    dest: /kickstart/config/{{ host_name }}.ks
+    mode: 0644
+  when:
+    host_role == "master"
+
+- name: Create /kickstart/config/{{ host_name }}.ks
+  template:
+    src: kickstart-agent-file
+    dest: /kickstart/config/{{ host_name }}.ks
+    mode: 0644
+  when:
+    host_role == "agent"
+
+- name: Create fragment for host {{ host_name }} at /tmp/dns-zone-fragments/{{ host_name }}
+  template:
+    src: dns-zone-entry.txt
+    dest: /tmp/dns-zone-fragments/2-{{ host_name }}
+    mode: 0644
+    
+- name: Create fragment for host {{ host_name }} at /tmp/dhcp-fragments/{{ host_name }}
+  template:
+    src: dhcp-host-entry.txt
+    dest: /tmp/dhcp-fragments/2-{{ host_name }}
+    mode: 0644
