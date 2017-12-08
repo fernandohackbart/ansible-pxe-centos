@@ -67,7 +67,7 @@ ssh-copy-id root@192.168.122.166
 ```
 ssh root@192.168.122.101 shutdown -h now
 ```
-## Start again the server (will run in background
+## Start again the server (will run in background)
 ```
 virsh start dcos-pxe
 ```
