@@ -43,16 +43,20 @@ mkdir -p /opt/dcos/guests/dcos-pxe/
 ```
 virt-install \
  -n dcos-pxe \
+ -v \
  --description="DCOS PXE machine" \
  --os-type=Linux \
  --os-variant=generic \
  --ram=512 \
  --vcpus=1 \
+ --graphics=vnc \
+ --noautoconsole \ 
  --disk path=/opt/dcos/guests/dcos-pxe/dcos-pxe.img,bus=virtio,size=10 \
  --cdrom=/opt/stage/CentOS-7-x86_64-DVD-1708.iso \
  --network network=dcos-pxe-net,model=virtio,mac=52:54:00:e2:87:5b \
  --network=bridge:virbr0
- ```
+```
+ 
 ## Install  Linux Centos7
 When the guest boots will present a graphical interface, the PXE server is installed with the minimum packages
 
@@ -68,7 +72,7 @@ ssh-copy-id root@192.168.122.166
 
 ## Stop the guest to release the console
 ```
-ssh root@192.168.122.101 shutdown -h now
+ssh root@192.168.122.166 shutdown -h now
 ```
 ## Start again the server (will run in background)
 ```
@@ -123,6 +127,8 @@ virt-install \
  --os-variant=generic \
  --ram=1200 \
  --vcpus=1 \
+ --graphics=vnc \
+ --noautoconsole \
  --disk path=/opt/dcos/guests/dcos-boot/dcos-boot.img,bus=virtio,size=10 \
  --pxe \
  --network network=dcos-pxe-net,model=virtio,mac=52:54:00:e2:87:5c \
@@ -141,6 +147,8 @@ virt-install \
  --os-variant=generic \
  --ram=7000 \
  --vcpus=1 \
+ --graphics=vnc \
+ --noautoconsole \ 
  --disk path=/opt/dcos/guests/dcos-master1/dcos-master1.img,bus=virtio,size=7 \
  --pxe \
  --network network=dcos-pxe-net,model=virtio,mac=52:54:00:e2:87:5d \
