@@ -1,12 +1,16 @@
+#https://www.centos.org/docs/5/html/Installation_Guide-en-US/s1-kickstart2-options.html
 install
 text
 lang {{ hosts_lang }}
 keyboard {{ hosts_keyboard }}
-network --bootproto=dhcp --hostname {{ host_name }} --noipv6
+
+network --bootproto=static --ip={{ host_ip }} --netmask={{ dhcp_network_mask }} --gateway={{ dhcp_router_ip }} --nameserver={{ pxe_server_ip }} --hostname {{ host_name }} --noipv6 --device=eth0
+network --bootproto=dhcp --hostname {{ host_name }} --noipv6 --device=ens4
+
 timezone --utc {{ hosts_time_zone }} 
 selinux --disabled
 firewall --disabled
-services --enabled=NetworkManager,sshd,docker
+services --enabled=sshd,docker
 eula --agreed
 ignoredisk --only-use=vda
 reboot
@@ -24,26 +28,23 @@ rootpw {{ hosts_root_pw }}
 
 url --url http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/install/{{ hosts_distribution }}/
 
-%pre --log=/var/log/kickstart-pre.log
-curl -o /etc/yum.repos.d/docker.repo http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/docker.repo
-%end
-
 %packages --nobase --ignoremissing
 @core
 bind-utils
 yum-utils
-docker-engine-1.13.1 
-docker-engine-selinux-1.13.1
+unzip
 %end
 
 %post --log=/var/log/kickstart-post.log
+#!/bin/sh
+groupadd nogroup
 mkdir -p /etc/systemd/system/docker.service.d
 curl -o /etc/ntp.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/ntp.conf
 curl -o /etc/resolv.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/resolv.conf
 curl -o /etc/modules-load.d/overlay.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/overlay.conf
 curl -o /etc/systemd/system/docker.service.d/override.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/docker-override.conf
+curl -o /etc/yum.repos.d/docker.repo http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/docker.repo
+yum install -y docker-engine-selinux-1.13.1 docker-engine-1.13.1
 systemctl start docker
 systemctl enable docker
-#open -s -w -- curl -o /etc/ntp.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/ntp.conf
-#open -s -w -- curl -o /etc/resolv.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/resolv.conf
-%end
+%end    

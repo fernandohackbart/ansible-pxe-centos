@@ -32,10 +32,12 @@ url --url http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/install/{
 @core
 bind-utils
 yum-utils
+unzip
 %end
 
 %post --log=/var/log/kickstart-post.log
 #!/bin/sh
+groupadd nogroup
 mkdir -p /etc/systemd/system/docker.service.d
 curl -o /etc/ntp.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/ntp.conf
 curl -o /etc/resolv.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/resolv.conf

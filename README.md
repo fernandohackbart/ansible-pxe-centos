@@ -29,8 +29,11 @@ EOF
 ```
 
 ```
-virsh net-create /tmp/dcos-pxe-net.xml
+virsh net-define /tmp/dcos-pxe-net.xml
+virsh net-autostart dcos-pxe-net
+virsh net-start dcos-pxe-net
 ```
+
 ## Create  the PXE guest
 ```
 rm -rf /opt/dcos/guests/dcos-pxe/
@@ -99,7 +102,15 @@ The hosts_names is a list of guest to be installed, the mac addresses should mat
 ansible-playbook -i hosts dcos-pxe.yml
 ```
 
+## If need to clean up the dcos-pxe server
+```
+virsh destroy dcos-pxe;virsh undefine dcos-pxe
+rm -rf /opt/dcos/guests/dcos-pxe/
+mkdir -p /opt/dcos/guests/dcos-pxe/
+```
+
 ## Now you can create other guests 
+Create a boot guest
 
 ```
 rm -rf /opt/dcos/guests/dcos-boot/
@@ -112,16 +123,41 @@ virt-install \
  --os-variant=generic \
  --ram=1200 \
  --vcpus=1 \
- --nographics \
  --disk path=/opt/dcos/guests/dcos-boot/dcos-boot.img,bus=virtio,size=10 \
  --pxe \
  --network network=dcos-pxe-net,model=virtio,mac=52:54:00:e2:87:5c \
  --network=bridge:virbr0
  ```
+ 
+Create a master guest
+```
+rm -rf /opt/dcos/guests/dcos-master1/
+mkdir -p /opt/dcos/guests/dcos-master1/
+
+virt-install \
+ -n dcos-master1 \
+ --description="DCOS Master 1 machine" \
+ --os-type=Linux \
+ --os-variant=generic \
+ --ram=7000 \
+ --vcpus=1 \
+ --disk path=/opt/dcos/guests/dcos-master1/dcos-master1.img,bus=virtio,size=7 \
+ --pxe \
+ --network network=dcos-pxe-net,model=virtio,mac=52:54:00:e2:87:5d \
+ --network=bridge:virbr0
+ ```
+ 
 ## To clean up the guests and start again 
 ```
 virsh destroy dcos-boot;virsh undefine dcos-boot
-virsh destroy dcos-pxe;virsh undefine dcos-pxe
+rm -rf /opt/dcos/guests/dcos-boot/
+mkdir -p /opt/dcos/guests/dcos-boot/
+```
+
+```
+virsh destroy dcos-master1;virsh undefine dcos-master1
+rm -rf /opt/dcos/guests/dcos-master1/
+mkdir -p /opt/dcos/guests/dcos-master1/
  ```
 
 ## Some other commands
