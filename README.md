@@ -148,13 +148,31 @@ virt-install \
  --ram=7000 \
  --vcpus=1 \
  --graphics=vnc \
- --noautoconsole \ 
  --disk path=/opt/dcos/guests/dcos-master1/dcos-master1.img,bus=virtio,size=7 \
  --pxe \
  --network network=dcos-pxe-net,model=virtio,mac=52:54:00:e2:87:5d \
  --network=bridge:virbr0
  ```
  
+Create a agent guest
+```
+rm -rf /opt/dcos/guests/dcos-agent1/
+mkdir -p /opt/dcos/guests/dcos-agent1/
+
+virt-install \
+ -n dcos-agent1 \
+ --description="DCOS Agent 1 machine" \
+ --os-type=Linux \
+ --os-variant=generic \
+ --ram=7000 \
+ --vcpus=1 \
+ --graphics=vnc \
+ --disk path=/opt/dcos/guests/dcos-agent1/dcos-agent1.img,bus=virtio,size=7 \
+ --pxe \
+ --network network=dcos-pxe-net,model=virtio,mac=52:54:00:e2:87:5e \
+ --network=bridge:virbr0
+ ```
+  
 ## To clean up the guests and start again 
 ```
 virsh destroy dcos-boot;virsh undefine dcos-boot
@@ -166,8 +184,14 @@ mkdir -p /opt/dcos/guests/dcos-boot/
 virsh destroy dcos-master1;virsh undefine dcos-master1
 rm -rf /opt/dcos/guests/dcos-master1/
 mkdir -p /opt/dcos/guests/dcos-master1/
- ```
+```
 
+```
+virsh destroy dcos-agent1;virsh undefine dcos-agent1
+rm -rf /opt/dcos/guests/dcos-agent1/
+mkdir -p /opt/dcos/guests/dcos-agent1/
+```
+ 
 ## Some other commands
 
 * Insert a cdrom in the guest drive: `virsh change-media dcos-pxe hda --insert /opt/stage/CentOS-7-x86_64-DVD-1708.iso`
