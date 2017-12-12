@@ -5,6 +5,8 @@
     host_ip: "{{ item[1] }}"
     host_mac_addr: "{{ item[2] }}"
     host_role: "{{ item[3] }}"
+    host_service_if: "{{ item[4] }}"
+    host_cluster_if: "{{ item[5] }}"
     
 - name: Create /tftpboot/pxelinux.cfg/01-{{ host_mac_addr | regex_replace('[^a-z0-9-]', '-')}}
   template:
@@ -14,27 +16,19 @@
     
 - name: Create /kickstart/config/{{ host_name }}.ks
   template:
-    src: kickstart-boot-file
+    src: kickstart-generic
     dest: /kickstart/config/{{ host_name }}.ks
     mode: 0644
   when:
-    host_role == "boot"
+    ((host_role == "boot") or (hosts_run_dcos == false))
 
 - name: Create /kickstart/config/{{ host_name }}.ks
   template:
-    src: kickstart-master-file
+    src: kickstart-dcos
     dest: /kickstart/config/{{ host_name }}.ks
     mode: 0644
   when:
-    host_role == "master"
-
-- name: Create /kickstart/config/{{ host_name }}.ks
-  template:
-    src: kickstart-agent-file
-    dest: /kickstart/config/{{ host_name }}.ks
-    mode: 0644
-  when:
-    host_role == "agent"
+    ((host_role != "boot") and (hosts_run_dcos == true))
 
 - name: Create fragment for host {{ host_name }} at /tmp/dns-zone-fragments/{{ host_name }}
   template:

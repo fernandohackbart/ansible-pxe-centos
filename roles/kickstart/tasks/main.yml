@@ -40,6 +40,14 @@
     owner: root
     group: root
     mode: 0644 
+    
+- name: Create /kickstart/stage/authorized_keys
+  template:
+    src: authorized_keys
+    dest: /kickstart/stage/authorized_keys
+    owner: root
+    group: root
+    mode: 0644     
 
 - name: Create /kickstart/stage/overlay.conf
   copy:

@@ -18,9 +18,9 @@ curl http://mirror.isec.pt/CentOS/7/isos/x86_64/CentOS-7-x86_64-DVD-1708.iso -O 
 
 ## Create a network in the host for the private use of the PXE process
 ```
-cat > /tmp/dcos-pxe-net.xml <<EOF
+cat > /tmp/dcos-cluster-net.xml <<EOF
 <network>
-  <name>dcos-pxe-net</name>
+  <name>dcos-cluster-net</name>
   <bridge name="virbr2" />
   <forward mode="route" />
   <ip address="192.168.30.1" netmask="255.255.255.0" />
@@ -29,10 +29,46 @@ EOF
 ```
 
 ```
-virsh net-define /tmp/dcos-pxe-net.xml
-virsh net-autostart dcos-pxe-net
-virsh net-start dcos-pxe-net
+virsh net-define /tmp/dcos-cluster-net.xml
+virsh net-autostart dcos-cluster-net
+virsh net-start dcos-cluster-net
 ```
+
+```
+cat > /tmp/dcos-service-net.xml <<EOF
+<network>
+  <name>dcos-service-net</name>
+  <bridge name="virbr3" />
+  <forward mode="route" />
+  <ip address="192.168.40.1" netmask="255.255.255.0" />
+</network>
+EOF
+```
+
+```
+virsh net-define /tmp/dcos-service-net.xml
+virsh net-autostart dcos-service-net
+virsh net-start dcos-service-net
+```
+
+
+```
+cat > /tmp/dcos-net.xml <<EOF
+<network>
+  <name>dcos-net</name>
+  <bridge name="dcos-br0" />
+  <forward/>
+  <ip address="192.168.40.1" netmask="255.255.255.0" />
+</network>
+EOF
+```
+
+```
+virsh net-define /tmp/dcos-net.xml
+virsh net-autostart dcos-net
+virsh net-start dcos-net
+```
+
 
 ## Create  the PXE guest
 ```
@@ -50,11 +86,9 @@ virt-install \
  --ram=512 \
  --vcpus=1 \
  --graphics=vnc \
- --noautoconsole \ 
  --disk path=/opt/dcos/guests/dcos-pxe/dcos-pxe.img,bus=virtio,size=10 \
  --cdrom=/opt/stage/CentOS-7-x86_64-DVD-1708.iso \
- --network network=dcos-pxe-net,model=virtio,mac=52:54:00:e2:87:5b \
- --network=bridge:virbr0
+ --network=bridge:dcos-br0
 ```
  
 ## Install  Linux Centos7
@@ -67,22 +101,32 @@ for mac in `virsh domiflist dcos-pxe |grep -o -E "([0-9a-f]{2}:){5}([0-9a-f]{2})
 
 ## Copy my ssh key to the host (have to make this better)
 ```
-ssh-copy-id root@192.168.122.166
-```
+ssh-copy-id root@192.168.40.10
 
 ## Stop the guest to release the console
 ```
-ssh root@192.168.122.166 shutdown -h now
+ssh root@192.168.40.10 shutdown -h now
 ```
+
+## Attach the CDROM to the guest, is will be used to server the installation files 
+```
+cat > /tmp/dcos-pxe-cdrom.xml <<EOF
+<disk type='block' device='cdrom'>
+  <driver name='qemu' type='raw'/>
+  <source dev='/opt/stage/CentOS-7-x86_64-DVD-1708.iso'/>
+  <target dev='hda' bus='ide'/>
+  <readonly/>
+</disk>
+EOF
+
+virsh update-device dcos-pxe /tmp/dcos-pxe-cdrom.xml
+```
+
 ## Start again the server (will run in background)
 ```
 virsh start dcos-pxe
 ```
 
-## Attach the CDROM to the guest, is will be used to server the instllation files 
-```
-virsh attach-disk dcos-pxe /opt/stage/CentOS-7-x86_64-DVD-1708.iso  hda --type cdrom --mode readonly
-```
 
 ## Clone the ansible playbook
 ```
@@ -93,7 +137,7 @@ The hosts_names is a list of guest to be installed, the mac addresses should mat
 ```
     pxeservers:
       hosts:
-        192.168.122.166:
+        192.168.122.219:
         
         hosts_names: ["dcos-boot","dcos-master1","dcos-agent1"]
         hosts_ips: ["192.168.30.100","192.168.30.101","192.168.30.102"]
@@ -104,6 +148,11 @@ The hosts_names is a list of guest to be installed, the mac addresses should mat
 ## Run the playbook from the base of the project clone
 ```
 ansible-playbook -i hosts dcos-pxe.yml
+```
+
+## Stop the guest to release the console
+```
+ssh root@192.168.40.10 reboot
 ```
 
 ## If need to clean up the dcos-pxe server
@@ -117,7 +166,10 @@ mkdir -p /opt/dcos/guests/dcos-pxe/
 Create a boot guest
 
 ```
-rm -rf /opt/dcos/guests/dcos-boot/
+virsh destroy dcos-boot;virsh undefine dcos-boot;rm -rf /opt/dcos/guests/dcos-boot/
+```
+
+```
 mkdir -p /opt/dcos/guests/dcos-boot/
 
 virt-install \
@@ -131,13 +183,15 @@ virt-install \
  --noautoconsole \
  --disk path=/opt/dcos/guests/dcos-boot/dcos-boot.img,bus=virtio,size=10 \
  --pxe \
- --network network=dcos-pxe-net,model=virtio,mac=52:54:00:e2:87:5c \
- --network=bridge:virbr0
+ --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:5c
  ```
  
 Create a master guest
 ```
-rm -rf /opt/dcos/guests/dcos-master1/
+virsh destroy dcos-master1;virsh undefine dcos-master1;rm -rf /opt/dcos/guests/dcos-master1/
+```
+
+```
 mkdir -p /opt/dcos/guests/dcos-master1/
 
 virt-install \
@@ -148,15 +202,18 @@ virt-install \
  --ram=7000 \
  --vcpus=1 \
  --graphics=vnc \
+ --noautoconsole \
  --disk path=/opt/dcos/guests/dcos-master1/dcos-master1.img,bus=virtio,size=7 \
  --pxe \
- --network network=dcos-pxe-net,model=virtio,mac=52:54:00:e2:87:5d \
- --network=bridge:virbr0
+ --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:5d
  ```
  
 Create a agent guest
 ```
-rm -rf /opt/dcos/guests/dcos-agent1/
+virsh destroy dcos-agent1;virsh undefine dcos-agent1;rm -rf /opt/dcos/guests/dcos-agent1/
+```
+ 
+```
 mkdir -p /opt/dcos/guests/dcos-agent1/
 
 virt-install \
@@ -167,31 +224,12 @@ virt-install \
  --ram=7000 \
  --vcpus=1 \
  --graphics=vnc \
+ --noautoconsole \
  --disk path=/opt/dcos/guests/dcos-agent1/dcos-agent1.img,bus=virtio,size=7 \
  --pxe \
- --network network=dcos-pxe-net,model=virtio,mac=52:54:00:e2:87:5e \
- --network=bridge:virbr0
+ --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:5e
  ```
-  
-## To clean up the guests and start again 
-```
-virsh destroy dcos-boot;virsh undefine dcos-boot
-rm -rf /opt/dcos/guests/dcos-boot/
-mkdir -p /opt/dcos/guests/dcos-boot/
-```
 
-```
-virsh destroy dcos-master1;virsh undefine dcos-master1
-rm -rf /opt/dcos/guests/dcos-master1/
-mkdir -p /opt/dcos/guests/dcos-master1/
-```
-
-```
-virsh destroy dcos-agent1;virsh undefine dcos-agent1
-rm -rf /opt/dcos/guests/dcos-agent1/
-mkdir -p /opt/dcos/guests/dcos-agent1/
-```
- 
 ## Some other commands
 
 * Insert a cdrom in the guest drive: `virsh change-media dcos-pxe hda --insert /opt/stage/CentOS-7-x86_64-DVD-1708.iso`
