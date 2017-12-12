@@ -18,41 +18,6 @@ curl http://mirror.isec.pt/CentOS/7/isos/x86_64/CentOS-7-x86_64-DVD-1708.iso -O 
 
 ## Create a network in the host for the private use of the PXE process
 ```
-cat > /tmp/dcos-cluster-net.xml <<EOF
-<network>
-  <name>dcos-cluster-net</name>
-  <bridge name="virbr2" />
-  <forward mode="route" />
-  <ip address="192.168.30.1" netmask="255.255.255.0" />
-</network>
-EOF
-```
-
-```
-virsh net-define /tmp/dcos-cluster-net.xml
-virsh net-autostart dcos-cluster-net
-virsh net-start dcos-cluster-net
-```
-
-```
-cat > /tmp/dcos-service-net.xml <<EOF
-<network>
-  <name>dcos-service-net</name>
-  <bridge name="virbr3" />
-  <forward mode="route" />
-  <ip address="192.168.40.1" netmask="255.255.255.0" />
-</network>
-EOF
-```
-
-```
-virsh net-define /tmp/dcos-service-net.xml
-virsh net-autostart dcos-service-net
-virsh net-start dcos-service-net
-```
-
-
-```
 cat > /tmp/dcos-net.xml <<EOF
 <network>
   <name>dcos-net</name>
@@ -102,6 +67,7 @@ for mac in `virsh domiflist dcos-pxe |grep -o -E "([0-9a-f]{2}:){5}([0-9a-f]{2})
 ## Copy my ssh key to the host (have to make this better)
 ```
 ssh-copy-id root@192.168.40.10
+```
 
 ## Stop the guest to release the console
 ```
