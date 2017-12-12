@@ -37,11 +37,8 @@ virsh net-start dcos-net
 
 ## Create  the PXE guest
 ```
-rm -rf /opt/dcos/guests/dcos-pxe/
 mkdir -p /opt/dcos/guests/dcos-pxe/
-```
 
-```
 virt-install \
  -n dcos-pxe \
  -v \
@@ -123,9 +120,7 @@ ssh root@192.168.40.10 reboot
 
 ## If need to clean up the dcos-pxe server
 ```
-virsh destroy dcos-pxe;virsh undefine dcos-pxe
-rm -rf /opt/dcos/guests/dcos-pxe/
-mkdir -p /opt/dcos/guests/dcos-pxe/
+virsh destroy dcos-pxe;virsh undefine dcos-pxe;rm -rf /opt/dcos/guests/dcos-pxe/
 ```
 
 ## Now you can create other guests 

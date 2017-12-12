@@ -16,9 +16,7 @@ all:
         hosts_ips: ["192.168.40.20","192.168.40.30","192.168.40.40","192.168.40.41"]
         hosts_mac_addrs: ["52:54:00:e2:87:5c","52:54:00:e2:87:5d","52:54:00:e2:87:5e","52:54:00:e2:87:5f"]
         hosts_roles: ["boot","master","slave","slave_public"]
-        hosts_service_if: ["ens4","ens4","ens4","ens4"]
-        hosts_cluster_if: ["ens3","ens3","ens3","ens3"]
-        hosts_run_dcos: false
+        hosts_cluster_if: ["eth0","eth0","eth0","eth0"]
         bind_local_ip: "{{pxe_server_ip}}"
         bind_local_forwarder: "192.168.40.1"
         bind_local_network: "192.168.40.0/24"
@@ -30,12 +28,11 @@ all:
         dhcp_network_mask: "255.255.255.0"
         dhcp_range_start: "192.168.40.50"
         dhcp_range_end: "192.168.40.60"
+        kickstart_ntp_server_name: "pool.ntp.org"
         kickstart_server_ip: "{{pxe_server_ip}}"
         kickstart_server_port: "80"
         kickstart_ssh_authorized_keys: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWBbO9PVLdTM+MT9fIUO27QFDxuYIlvJKjm5nQPWCFX0ofmH/lUXSRZW/1DVAiv00NLRJ1cFURoJlas7CFxJLSe4gAYacDDoaw7WlNjhwja7PLkGQqEnrt9D8n3fljCj2zI+Yt7rl16yQU7qiLBun7T6ZRchY7N2Cv2aOAVXMSsMAMKstRgo7MCJ+vrlY8GvwgtRrb0CY88Z5g8c+okJLcFvA7fniyjN62+EK/ECQ23+UO1kgCcyg6mHo8l6bcCwZEWYhFlTccEpXsUMwd7RBuFH1XOzH6KW3Tw2cYhPRIPmvOXEuSfjRscoCaHJ0GwrGN0iZ6KzljBmChfNpd9Qvp fernando.hackbart@fehackbart.timestamp.pt"
         tftp_server_ip: "{{pxe_server_ip}}"
         pxe_server_ip: "192.168.40.10"
-        pxe_cluster_if: "ens3"
-        dcos_bootstrap_ip: "192.168.40.20"
-        dcos_bootstrap_port: "80"
+        pxe_cluster_if: "eth0"
         

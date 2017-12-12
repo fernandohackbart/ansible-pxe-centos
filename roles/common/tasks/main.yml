@@ -1,20 +1,4 @@
 ---
-#- name: Removing cluster network
-#  shell: "nmcli con del dcos-cluster"
-#  ignore_errors: yes
-
-#- name: Setting cluster network interface IP to {{ pxe_server_ip }} gw {{ dhcp_router_ip }} on {{ pxe_cluster_if }}
-#  shell: "nmcli con add con-name dcos-cluster ifname {{ pxe_cluster_if }} type ethernet ip4 {{ pxe_server_ip }}/24 gw4 {{ dhcp_router_ip }}"
-  
-#- name: Setting cluster network ipv4.dns '{{ pxe_server_ip }},{{ bind_local_forwarder }}'
-#  shell: "nmcli con mod dcos-cluster ipv4.dns '{{ pxe_server_ip }},{{ bind_local_forwarder }}'"
-    
-#- name: Setting cluster network ipv4.route-metric 200
-#  shell: "nmcli con mod dcos-cluster ipv4.route-metric 200"
-  
-#- name: Setting interface {{ pxe_cluster_if }} up
-#  shell: "nmcli con up dcos-cluster"
-  
 - name: Set hostname to {{ bind_local_hostname }}.{{ bind_local_zone_name }}
   hostname:
     name: "{{ bind_local_hostname }}.{{ bind_local_zone_name }}"
