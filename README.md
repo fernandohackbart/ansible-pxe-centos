@@ -50,11 +50,19 @@ virt-install \
  --graphics=vnc \
  --disk path=/opt/dcos/guests/dcos-pxe/dcos-pxe.img,bus=virtio,size=10 \
  --cdrom=/opt/stage/CentOS-7-x86_64-DVD-1708.iso \
- --network=bridge:dcos-br0
+ --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:5b
 ```
  
 ## Install  Linux Centos7
 When the guest boots will present a graphical interface, the PXE server is installed with the minimum packages
+
+* IP: 192.168.40.10
+* Gateway: 192.168.40.1
+* DNS: 192.168.40.1
+* Hostname: dcos-pxe.prototype.local
+* Root password: Welcome1
+* Keyboard: <choose yours>
+* Timezone: <choose yours>
 
 ## Get host IP to run the playbook against the guest
 ```
@@ -113,12 +121,12 @@ The hosts_names is a list of guest to be installed, the mac addresses should mat
 ansible-playbook -i hosts dcos-pxe.yml
 ```
 
-## Stop the guest to release the console
+## Stop the guest to apply the changes in the enterprise Linux
 ```
 ssh root@192.168.40.10 reboot
 ```
 
-## If need to clean up the dcos-pxe server
+## If need to clean up the dcos-pxe server!!!!
 ```
 virsh destroy dcos-pxe;virsh undefine dcos-pxe;rm -rf /opt/dcos/guests/dcos-pxe/
 ```
