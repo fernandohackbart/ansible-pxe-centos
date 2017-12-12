@@ -184,7 +184,7 @@ virt-install \
  --disk path=/opt/dcos/guests/dcos-boot/dcos-boot.img,bus=virtio,size=10 \
  --pxe \
  --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:5c
- ```
+```
  
 Create a master guest
 ```
@@ -206,7 +206,7 @@ virt-install \
  --disk path=/opt/dcos/guests/dcos-master1/dcos-master1.img,bus=virtio,size=7 \
  --pxe \
  --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:5d
- ```
+```
  
 Create a agent guest
 ```
