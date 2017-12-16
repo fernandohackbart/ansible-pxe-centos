@@ -15,10 +15,20 @@
     
 - name: Create /kickstart/config/{{ host_name }}.ks
   template:
-    src: kickstart-host
+    src: kickstart-dcos
     dest: /kickstart/config/{{ host_name }}.ks
     mode: 0644
+  when: 
+    - host_role in ["boot","master","slave","slave_public"]
 
+- name: Create /kickstart/config/{{ host_name }}.ks
+  template:
+    src: kickstart-nfs
+    dest: /kickstart/config/{{ host_name }}.ks
+    mode: 0644
+  when: 
+    - host_role in ["nfs"]
+    
 - name: Create fragment for host {{ host_name }} at /tmp/dns-zone-fragments/{{ host_name }}
   template:
     src: dns-zone-entry.txt

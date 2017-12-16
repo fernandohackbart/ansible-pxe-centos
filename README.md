@@ -199,6 +199,27 @@ virt-install \
  --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:5e
  ```
 
+Create a NFS guest
+```
+virsh destroy dcos-nfs1;virsh undefine dcos-nfs1;rm -rf /opt/dcos/guests/dcos-nfs1/
+```
+ 
+```
+mkdir -p /opt/dcos/guests/dcos-nfs1/
+
+virt-install \
+ -n dcos-nfs1 \
+ --description="DCOS NFS 1 machine" \
+ --os-type=Linux \
+ --os-variant=generic \
+ --ram=1500 \
+ --vcpus=1 \
+ --graphics=vnc \
+ --noautoconsole \
+ --disk path=/opt/dcos/guests/dcos-nfs1/dcos-nfs1.img,bus=virtio,size=7 \
+ --pxe \
+ --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:5f
+ ```
 ## Some other commands
 
 * Insert a cdrom in the guest drive: `virsh change-media dcos-pxe hda --insert /opt/stage/CentOS-7-x86_64-DVD-1708.iso`

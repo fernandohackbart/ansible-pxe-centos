@@ -29,24 +29,27 @@ url --url http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/install/{
 
 %packages --nobase --ignoremissing
 @core
-bind-utils
-yum-utils
-unzip
+nfs-utils
 %end
 
 %post --log=/var/log/kickstart-post.log
 #!/bin/sh
-groupadd nogroup
-mkdir -p /etc/systemd/system/docker.service.d
 mkdir -p /root/.ssh
 chmod 0700 /root/.ssh
 curl -o /root/.ssh/authorized_keys http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/authorized_keys
 curl -o /etc/ntp.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/ntp.conf
 curl -o /etc/resolv.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/resolv.conf
-curl -o /etc/modules-load.d/overlay.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/overlay.conf
-curl -o /etc/systemd/system/docker.service.d/override.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/docker-override.conf
-curl -o /etc/yum.repos.d/docker.repo http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/docker.repo
-yum install -y docker-engine-selinux-1.13.1 docker-engine-1.13.1
-systemctl start docker
-systemctl enable docker
+mkdir -p /var/nfsshare
+chmod -R 755 /var/nfsshare
+chown nfsnobody:nfsnobody /var/nfsshare
+systemctl enable rpcbind
+systemctl enable nfs-server
+systemctl enable nfs-lock
+systemctl enable nfs-idmap
+curl -o /etc/exports http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/exports
+#systemctl start rpcbind
+#systemctl start nfs-server
+#systemctl start nfs-lock
+#systemctl start nfs-idmap
+#systemctl restart nfs-server
 %end    

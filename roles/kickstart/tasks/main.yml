@@ -33,6 +33,15 @@
     group: root
     mode: 0644   
 
+- name: Create /kickstart/stage/exports
+  template:
+    src: exports
+    dest: /kickstart/stage/exports
+    owner: root
+    group: root
+    mode: 0644   
+
+
 - name: Create /kickstart/stage/ntp.conf
   template:
     src: ntp.conf

@@ -12,10 +12,10 @@ all:
         hosts_keyboard: "pt-latin1"
         hosts_lang: "en_US.UTF-8"
         hosts_distribution: "centos7"
-        hosts_names: ["dcos-boot","dcos-master1","dcos-agent1","dcos-agent-public1"]
+        hosts_names: ["dcos-boot","dcos-master1","dcos-agent1","dcos-nfs1"]
         hosts_ips: ["192.168.40.20","192.168.40.30","192.168.40.40","192.168.40.41"]
         hosts_mac_addrs: ["52:54:00:e2:87:5c","52:54:00:e2:87:5d","52:54:00:e2:87:5e","52:54:00:e2:87:5f"]
-        hosts_roles: ["boot","master","slave","slave_public"]
+        hosts_roles: ["boot","master","slave","nfs"]
         hosts_cluster_if: ["eth0","eth0","eth0","eth0"]
         bind_local_ip: "{{pxe_server_ip}}"
         bind_local_forwarder: "192.168.40.1"
