@@ -28,6 +28,22 @@
     mode: 0644
   when: 
     - host_role in ["nfs"]
+
+- name: Create /kickstart/config/{{ host_name }}.ks
+  template:
+    src: kickstart-gluster
+    dest: /kickstart/config/{{ host_name }}.ks
+    mode: 0644
+  when: 
+    - host_role in ["glusterserver"]
+    
+- name: Create /kickstart/config/{{ host_name }}.ks
+  template:
+    src: kickstart-k8s
+    dest: /kickstart/config/{{ host_name }}.ks
+    mode: 0644
+  when: 
+    - host_role in ["k8s"]    
     
 - name: Create fragment for host {{ host_name }} at /tmp/dns-zone-fragments/{{ host_name }}
   template:
