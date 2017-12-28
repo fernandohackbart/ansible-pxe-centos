@@ -81,7 +81,7 @@ ssh root@192.168.40.10 shutdown -h now
 
 ## Attach the CDROM to the guest, is will be used to server the installation files 
 ```
-cat > /tmp/dcos-pxe-cdrom.xml <<EOF
+cat > /tmp/pxe-cdrom.xml <<EOF
 <disk type='block' device='cdrom'>
   <driver name='qemu' type='raw'/>
   <source dev='/opt/stage/CentOS-7-x86_64-DVD-1708.iso'/>
@@ -90,7 +90,7 @@ cat > /tmp/dcos-pxe-cdrom.xml <<EOF
 </disk>
 EOF
 
-virsh update-device dcos-pxe /tmp/dcos-pxe-cdrom.xml
+virsh update-device dcos-pxe /tmp/pxe-cdrom.xml
 ```
 
 ## Start again the server (will run in background)
@@ -118,7 +118,7 @@ The hosts_names is a list of guest to be installed, the mac addresses should mat
 
 ## Run the playbook from the base of the project clone
 ```
-ansible-playbook -i hosts dcos-pxe.yml
+ansible-playbook -i hosts pxe.yml
 ```
 
 ## Stop the guest to apply the changes in the enterprise Linux
@@ -131,182 +131,8 @@ ssh root@192.168.40.10 reboot
 virsh destroy dcos-pxe;virsh undefine dcos-pxe;rm -rf /opt/dcos/guests/dcos-pxe/
 ```
 
-## Now you can create other guests 
-### Create a boot guest
+Noe the guests for the other applications can be created
 
-```
-virsh destroy dcos-boot;virsh undefine dcos-boot;rm -rf /opt/dcos/guests/dcos-boot/
-```
-
-```
-mkdir -p /opt/dcos/guests/dcos-boot/
-
-virt-install \
- -n dcos-boot \
- --description="DCOS BOOT machine" \
- --os-type=Linux \
- --os-variant=generic \
- --ram=1200 \
- --vcpus=1 \
- --graphics=vnc \
- --noautoconsole \
- --disk path=/opt/dcos/guests/dcos-boot/dcos-boot.img,bus=virtio,size=10 \
- --pxe \
- --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:5c
-```
- 
-### Create a master guest
-```
-virsh destroy dcos-master1;virsh undefine dcos-master1;rm -rf /opt/dcos/guests/dcos-master1/
-```
-
-```
-mkdir -p /opt/dcos/guests/dcos-master1/
-
-virt-install \
- -n dcos-master1 \
- --description="DCOS Master 1 machine" \
- --os-type=Linux \
- --os-variant=generic \
- --ram=7000 \
- --vcpus=1 \
- --graphics=vnc \
- --noautoconsole \
- --disk path=/opt/dcos/guests/dcos-master1/dcos-master1.img,bus=virtio,size=7 \
- --pxe \
- --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:5d
-```
- 
-### Create a agent guest
-```
-virsh destroy dcos-agent1;virsh undefine dcos-agent1;rm -rf /opt/dcos/guests/dcos-agent1/
-```
- 
-```
-mkdir -p /opt/dcos/guests/dcos-agent1/
-
-virt-install \
- -n dcos-agent1 \
- --description="DCOS Agent 1 machine" \
- --os-type=Linux \
- --os-variant=generic \
- --ram=7000 \
- --vcpus=1 \
- --graphics=vnc \
- --noautoconsole \
- --disk path=/opt/dcos/guests/dcos-agent1/dcos-agent1.img,bus=virtio,size=7 \
- --pxe \
- --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:5e
- ```
-
-### Create a NFS guest
-```
-virsh destroy dcos-nfs1;virsh undefine dcos-nfs1;rm -rf /opt/dcos/guests/dcos-nfs1/
-```
- 
-```
-mkdir -p /opt/dcos/guests/dcos-nfs1/
-
-virt-install \
- -n dcos-nfs1 \
- --description="DCOS NFS 1 machine" \
- --os-type=Linux \
- --os-variant=generic \
- --ram=1500 \
- --vcpus=1 \
- --graphics=vnc \
- --noautoconsole \
- --disk path=/opt/dcos/guests/dcos-nfs1/dcos-nfs1.img,bus=virtio,size=7 \
- --pxe \
- --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:5f
- ```
-
-### Create a Gluster server guest
-```
-virsh destroy dcos-gluster1;virsh undefine dcos-gluster1;rm -rf /opt/dcos/guests/dcos-gluster1
-virsh destroy dcos-gluster2;virsh undefine dcos-gluster2;rm -rf /opt/dcos/guests/dcos-gluster2
-```
- 
-```
-mkdir -p /opt/dcos/guests/dcos-gluster1
-mkdir -p /opt/dcos/guests/dcos-gluster2
-
-virt-install \
- -n dcos-gluster1 \
- --description="DCOS Gluster 1 machine" \
- --os-type=Linux \
- --os-variant=generic \
- --ram=1500 \
- --vcpus=1 \
- --graphics=vnc \
- --noautoconsole \
- --disk path=/opt/dcos/guests/dcos-gluster1/dcos-gluster1.img,bus=virtio,size=7 \
- --disk path=/opt/dcos/guests/dcos-gluster1/dcos-gluster1-data1.img,bus=virtio,size=10 \
- --pxe \
- --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:62
-
-
-virt-install \
- -n dcos-gluster2 \
- --description="DCOS Gluster 2 machine" \
- --os-type=Linux \
- --os-variant=generic \
- --ram=1500 \
- --vcpus=1 \
- --graphics=vnc \
- --noautoconsole \
- --disk path=/opt/dcos/guests/dcos-gluster2/dcos-gluster2.img,bus=virtio,size=7 \
- --disk path=/opt/dcos/guests/dcos-gluster2/dcos-gluster2-data1.img,bus=virtio,size=10 \
- --pxe \
- --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:63
- ```
-
-
-### Create a Kubernetes master guest
-```
-virsh destroy k8s-master1;virsh undefine k8s-master1;rm -rf /opt/dcos/guests/k8s-master1/
-```
- 
-```
-mkdir -p /opt/dcos/guests/k8s-master1
-
-virt-install \
- -n k8s-master1 \
- --description="DCOS Kubernetes master 1 machine" \
- --os-type=Linux \
- --os-variant=generic \
- --ram=1500 \
- --vcpus=1 \
- --graphics=vnc \
- --noautoconsole \
- --disk path=/opt/dcos/guests/k8s-master1/k8s-master1.img,bus=virtio,size=7 \
- --pxe \
- --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:60
- ``` 
-
-### Create a Kubernetes node guest
-```
-virsh destroy k8s-node1;virsh undefine k8s-node1;rm -rf /opt/dcos/guests/k8s-node1/
-```
- 
-```
-mkdir -p /opt/dcos/guests/k8s-node1
-
-virt-install \
- -n k8s-node1 \
- --description="DCOS Kubernetes node 1 machine" \
- --os-type=Linux \
- --os-variant=generic \
- --ram=6000 \
- --vcpus=1 \
- --graphics=vnc \
- --noautoconsole \
- --disk path=/opt/dcos/guests/k8s-node1/k8s-node1.img,bus=virtio,size=7 \
- --pxe \
- --network=bridge:dcos-br0,model=virtio,mac=52:54:00:e2:87:61
- ``` 
-
- 
 ## Some other commands
 
 * Insert a cdrom in the guest drive: `virsh change-media dcos-pxe hda --insert /opt/stage/CentOS-7-x86_64-DVD-1708.iso`
