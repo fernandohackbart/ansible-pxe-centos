@@ -30,6 +30,7 @@
      - "{{ hosts_mac_addrs }}"  
      - "{{ hosts_roles }}"
      - "{{ hosts_cluster_if }}"
+     - "{{ hosts_distribution }}"
      
 - name: Adding fragments from /tmp/dns-zone-fragments to /var/named/{{ bind_local_zone_name }}  
   assemble:

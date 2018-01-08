@@ -15,6 +15,12 @@
     remote_src: True 
     src: /var/lib/tftpboot/mboot.c32 
     dest: /tftpboot/centos7
+    
+- name: Copy /var/lib/tftpboot/menu.c32  to /tftpboot/centos7
+  copy: 
+    remote_src: True 
+    src: /var/lib/tftpboot/menu.c32  
+    dest: /tftpboot/centos7    
 
 - name: Creates /centos7 directory
   file: 
@@ -45,3 +51,5 @@
     remote_src: True
   with_items: 
     "{{files_to_copy.files}}"
+
+    

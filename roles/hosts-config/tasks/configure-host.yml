@@ -1,50 +1,70 @@
 ---
-- name: Defining variables with the values hostname:{{ item[0] }} ip address:{{ item[1] }} mac address:{{ item[2] }} role:{{ item[3] }}
+- name: Defining variables with the values hostname:{{ item[0] }} ip address:{{ item[1] }} mac address:{{ item[2] }} role:{{ item[3] }} iterface:{{ item[4] }} distribution:{{ item[5] }}
   set_fact:
     host_name: "{{ item[0] }}"
     host_ip: "{{ item[1] }}"
     host_mac_addr: "{{ item[2] }}"
     host_role: "{{ item[3] }}"
     host_cluster_if: "{{ item[4] }}"
+    host_distribution: "{{ item[5] }}"
     
-- name: Create /tftpboot/pxelinux.cfg/01-{{ host_mac_addr | regex_replace('[^a-z0-9-]', '-')}}
-  template:
-    src: tftp-host-file
-    dest: /tftpboot/pxelinux.cfg/01-{{ host_mac_addr | regex_replace('[^a-z0-9-]', '-') }}
-    mode: 0644
-    
-- name: Create /kickstart/config/{{ host_name }}.ks
-  template:
-    src: kickstart-dcos
-    dest: /kickstart/config/{{ host_name }}.ks
-    mode: 0644
-  when: 
-    - host_role in ["boot","master","slave","slave_public"]
+###################################################################################################################
+- name: Create tftp and ignition configuration for CoreOS guests
+  block:
+  
+  - name: Create /tftpboot/pxelinux.cfg/01-{{ host_mac_addr | regex_replace('[^a-z0-9-]', '-')}}
+    template:
+      src: tftp-host-file-coreos
+      dest: /tftpboot/pxelinux.cfg/01-{{ host_mac_addr | regex_replace('[^a-z0-9-]', '-') }}
+      mode: 0644
 
-- name: Create /kickstart/config/{{ host_name }}.ks
-  template:
-    src: kickstart-nfs
-    dest: /kickstart/config/{{ host_name }}.ks
-    mode: 0644
-  when: 
-    - host_role in ["nfs"]
+  when: host_distribution == "coreos"
+  
+###################################################################################################################
+- name: Create tftp and kickstart configuration for Centos7 guests
+  block:
+  
+  - name: Create /tftpboot/pxelinux.cfg/01-{{ host_mac_addr | regex_replace('[^a-z0-9-]', '-')}}
+    template:
+      src: tftp-host-file-centos7
+      dest: /tftpboot/pxelinux.cfg/01-{{ host_mac_addr | regex_replace('[^a-z0-9-]', '-') }}
+      mode: 0644
+  
+  - name: Create /kickstart/config/{{ host_name }}.ks
+    template:
+      src: kickstart-dcos
+      dest: /kickstart/config/{{ host_name }}.ks
+      mode: 0644
+    when: 
+      - host_role in ["boot","master","slave","slave_public"]
 
-- name: Create /kickstart/config/{{ host_name }}.ks
-  template:
-    src: kickstart-gluster
-    dest: /kickstart/config/{{ host_name }}.ks
-    mode: 0644
-  when: 
-    - host_role in ["glusterserver"]
+  - name: Create /kickstart/config/{{ host_name }}.ks
+    template:
+      src: kickstart-nfs
+      dest: /kickstart/config/{{ host_name }}.ks
+      mode: 0644
+    when: 
+      - host_role in ["nfs"]
+
+  - name: Create /kickstart/config/{{ host_name }}.ks
+    template:
+      src: kickstart-gluster
+      dest: /kickstart/config/{{ host_name }}.ks
+      mode: 0644
+    when: 
+      - host_role in ["glusterserver"]
     
-- name: Create /kickstart/config/{{ host_name }}.ks
-  template:
-    src: kickstart-k8s
-    dest: /kickstart/config/{{ host_name }}.ks
-    mode: 0644
-  when: 
-    - host_role in ["k8s"]    
+  - name: Create /kickstart/config/{{ host_name }}.ks
+    template:
+      src: kickstart-k8s
+      dest: /kickstart/config/{{ host_name }}.ks
+      mode: 0644
+    when: 
+      - host_role in ["k8s"]    
     
+  when: host_distribution == "centos7"
+  
+###################################################################################################################  
 - name: Create fragment for host {{ host_name }} at /tmp/dns-zone-fragments/{{ host_name }}
   template:
     src: dns-zone-entry.txt

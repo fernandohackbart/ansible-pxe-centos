@@ -1,0 +1,48 @@
+{
+  "ignition": {
+    "config": {},
+    "timeouts": {},
+    "version": "2.1.0"
+  },
+  "networkd": {},
+  "passwd": {
+    "users": [
+      {
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "{{ kickstart_ssh_authorized_keys }}"
+        ]
+      },
+      {
+        "name": "root",
+        "sshAuthorizedKeys": [
+          "{{ kickstart_ssh_authorized_keys }}"
+        ]
+      }
+    ]
+  },
+  "storage": {
+    "disks": [
+      {
+        "device": "/dev/vda",
+        "partitions": [
+          {
+            "label": "ROOT"
+          }
+        ],
+        "wipeTable": true
+      }
+    ],
+    "filesystems": [
+      {
+        "mount": {
+          "device": "/dev/disk/by-partlabel/ROOT",
+          "format": "ext4",
+          "label": "ROOT",
+          "wipeFilesystem": true
+        }
+      }
+    ]
+  },
+  "systemd": {}
+}

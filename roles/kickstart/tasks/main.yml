@@ -41,7 +41,6 @@
     group: root
     mode: 0644   
 
-
 - name: Create /kickstart/stage/ntp.conf
   template:
     src: ntp.conf
@@ -87,10 +86,10 @@
     path: "/kickstart/config"
     state: directory
     
-- name: Start nginx
+- name: Restart nginx
   service:
     name: nginx
-    state: started
+    state: restarted
 
 - name: Enable nginx
   service:

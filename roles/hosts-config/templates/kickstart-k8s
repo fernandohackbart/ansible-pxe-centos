@@ -24,7 +24,7 @@ logvol / --fstype xfs --name=lv01 --vgname=rootvg01 --size=1 --grow
 
 rootpw {{ hosts_root_pw }}
 
-url --url http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/install/{{ hosts_distribution }}/
+url --url http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/install/{{ host_distribution }}/
 
 %packages --nobase --ignoremissing
 @core

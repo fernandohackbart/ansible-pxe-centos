@@ -1,8 +1,0 @@
-default menu.c32
-prompt1
-timeout 20
-display display.msg
-label {{ host_name }}
- menu label {{ host_name }}
- kernel {{ hosts_distribution }}/vmlinuz
- append initrd={{ hosts_distribution }}/initrd.img headless ip=dhcp lang=en_us ks=http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/kickstart/{{ host_name }}.ks ksdevice=eth0 

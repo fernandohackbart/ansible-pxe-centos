@@ -30,30 +30,6 @@
     src: /usr/share/syslinux/pxelinux.0 
     dest: /tftpboot
 
-- name: Copy /var/lib/tftpboot/mboot.c32 to /tftpboot
-  copy: 
-    remote_src: True 
-    src: /var/lib/tftpboot/mboot.c32 
-    dest: /tftpboot
-
-- name: Copy /var/lib/tftpboot/memdisk to /tftpboot
-  copy: 
-    remote_src: True 
-    src: /var/lib/tftpboot/memdisk 
-    dest: /tftpboot
-
-- name: Copy /var/lib/tftpboot/menu.c32  to /tftpboot
-  copy: 
-    remote_src: True 
-    src: /var/lib/tftpboot/menu.c32  
-    dest: /tftpboot
-    
-- name: Copy /var/lib/tftpboot/chain.c32  to /tftpboot
-  copy: 
-    remote_src: True 
-    src: /var/lib/tftpboot/chain.c32 
-    dest: /tftpboot
-
 - name: Creates /tftpboot/pxelinux.cfg directory
   file: 
     path: "/tftpboot/pxelinux.cfg"

@@ -1,0 +1,11 @@
+default {{ host_name }}
+prompt 1
+timeout 15
+
+display boot.msg
+
+label {{ host_name }}
+ menu label {{ host_name }}
+ kernel {{ host_distribution }}/coreos_production_pxe.vmlinuz
+ initrd {{ host_distribution }}/coreos_production_pxe_image.cpio.gz
+ append coreos.first_boot=1 coreos.config.url=http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/ignition/config/coreos-pxe.ign

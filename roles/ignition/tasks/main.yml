@@ -1,0 +1,44 @@
+---
+- name: Install epel-release
+  package:
+    name: epel-release
+    state: latest
+
+- name: Install nginx
+  package:
+    name: nginx
+    state: latest
+    
+- name: Create /etc/nginx/default.d/ignition.conf
+  template:
+    src: ignition.conf
+    dest: /etc/nginx/default.d/ignition.conf
+    mode: 0600
+
+- name: Creates /ignition directory
+  file: 
+    path: "/ignition"
+    state: directory
+
+- name: Creates /ignition/config directory
+  file: 
+    path: "/ignition/config"
+    state: directory
+    
+- name: Create /ignition/config/coreos-pxe.ign
+  template:
+    src: coreos-pxe.ign
+    dest: /ignition/config/coreos-pxe.ign
+    owner: root
+    group: root
+    mode: 0644 
+    
+- name: Restart nginx
+  service:
+    name: nginx
+    state: restarted
+
+- name: Enable nginx
+  service:
+    name: nginx
+    enabled: yes  

@@ -1,0 +1,34 @@
+---
+- name: Creates /tftpboot/coreos directory
+  file: 
+    path: "/tftpboot/coreos"
+    state: directory
+
+- name: Download coreos_production_pxe.vmlinuz
+  get_url:
+    url: https://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe.vmlinuz
+    dest: /tftpboot/coreos/coreos_production_pxe.vmlinuz
+    mode: 0644
+
+- name: Download coreos_production_pxe_image.cpio.gz
+  get_url:
+    url: https://stable.release.core-os.net/amd64-usr/current/coreos_production_pxe_image.cpio.gz
+    dest: /tftpboot/coreos/coreos_production_pxe_image.cpio.gz
+    mode: 0644
+
+#- name: Creates /coreos directory
+#  file: 
+#    path: "/coreos"
+#    state: directory
+    
+#- name: Mount the ISO for CentOS7 on /coreos
+#  mount:
+#    path: /coreos
+#    src: /dev/sr0
+#    fstype: iso9660
+#    opts: ro
+#    state: mounted
+    
+
+
+    
