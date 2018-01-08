@@ -14,7 +14,7 @@
     src: kickstart.conf
     dest: /etc/nginx/default.d/kickstart.conf
     mode: 0600
-
+    
 - name: Creates /kickstart directory
   file: 
     path: "/kickstart"
@@ -61,6 +61,14 @@
   copy:
     src: overlay.conf
     dest: /kickstart/stage/overlay.conf
+    owner: root
+    group: root
+    mode: 0644 
+
+- name: Create /kickstart/stage/ip_vs.conf
+  copy:
+    src: ip_vs.conf
+    dest: /kickstart/stage/ip_vs.conf
     owner: root
     group: root
     mode: 0644 

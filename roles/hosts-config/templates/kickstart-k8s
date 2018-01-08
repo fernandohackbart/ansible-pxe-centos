@@ -45,4 +45,5 @@ curl -o /root/.ssh/authorized_keys http://{{ kickstart_server_ip }}:{{ kickstart
 curl -o /etc/ntp.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/ntp.conf
 curl -o /etc/resolv.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/resolv.conf
 curl -o /etc/modules-load.d/overlay.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/overlay.conf
+curl -o /etc/modules-load.d/ip_vs.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/ip_vs.conf
 %end    
