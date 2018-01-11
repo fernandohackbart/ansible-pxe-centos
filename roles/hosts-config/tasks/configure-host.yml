@@ -36,7 +36,7 @@
       dest: /kickstart/config/{{ host_name }}.ks
       mode: 0644
     when: 
-      - host_role in ["boot","master","slave","slave_public"]
+      - host_role in ["dcos-boot","dcos-master","dcos-slave","dcos-slave_public"]
 
   - name: Create /kickstart/config/{{ host_name }}.ks
     template:
@@ -61,7 +61,15 @@
       mode: 0644
     when: 
       - host_role in ["k8s"]    
-    
+
+  - name: Create /kickstart/config/{{ host_name }}.ks
+    template:
+      src: kickstart-generic
+      dest: /kickstart/config/{{ host_name }}.ks
+      mode: 0644
+    when: 
+      - host_role in ["generic"] 
+      
   when: host_distribution == "centos7"
   
 ###################################################################################################################  

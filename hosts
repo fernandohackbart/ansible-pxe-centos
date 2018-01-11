@@ -6,17 +6,17 @@ all:
       hosts:
         192.168.40.10:
       vars: 
-        hosts_role_types: ["boot","master","agent"]
+        hosts_role_types: ["dcos-boot","dcos-master","dcos-slave","dcos-slave_public","nfs","k8s","glusterserver","generic"]
         hosts_time_zone: "Europe/Lisbon"
         hosts_root_pw: "Welcome1"
         hosts_keyboard: "pt-latin1"
         hosts_lang: "en_US.UTF-8"
-        hosts_distribution: ["centos7","centos7","centos7","centos7","centos7","centos7","centos7","centos7","centos7","centos7","centos7","coreos","coreos","centos7"]
-        hosts_names: ["dcos-boot","dcos-master1","dcos-agent1","dcos-nfs1","k8s-master1","k8s-node1","k8s-gluster1","k8s-gluster2","k8s-gluster3","dcos-agent2","k8s-node2","k8s-coreos-master1","k8s-coreos-node1","openstack1"]
-        hosts_ips: ["192.168.40.20","192.168.40.30","192.168.40.40","192.168.40.41","192.168.40.42","192.168.40.43","192.168.40.44","192.168.40.45","192.168.40.46","192.168.40.47","192.168.40.48","192.168.40.70","192.168.40.71","192.168.40.91"]
-        hosts_mac_addrs: ["52:54:00:e2:87:5c","52:54:00:e2:87:5d","52:54:00:e2:87:5e","52:54:00:e2:87:5f","52:54:00:e2:87:60","52:54:00:e2:87:61","52:54:00:e2:87:62","52:54:00:e2:87:63","52:54:00:e2:87:64","52:54:00:e2:87:65","52:54:00:e2:87:66","52:54:00:e2:87:70","52:54:00:e2:87:71","52:54:00:e2:87:91"]
-        hosts_roles: ["boot","master","slave","nfs","k8s","k8s","glusterserver","glusterserver","glusterserver","slave","k8s","k8s","k8s","master"]
-        hosts_cluster_if: ["eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0"]
+        hosts_distribution: ["centos7","centos7","centos7","centos7","centos7","centos7","centos7","centos7","centos7","centos7","centos7","coreos","coreos","centos7","centos7"]
+        hosts_names: ["dcos-boot","dcos-master1","dcos-agent1","dcos-nfs1","k8s-master1","k8s-node1","k8s-gluster1","k8s-gluster2","k8s-gluster3","dcos-agent2","k8s-node2","k8s-coreos-master1","k8s-coreos-node1","cloudstack1","mesos1"]
+        hosts_ips: ["192.168.40.20","192.168.40.30","192.168.40.40","192.168.40.41","192.168.40.42","192.168.40.43","192.168.40.44","192.168.40.45","192.168.40.46","192.168.40.47","192.168.40.48","192.168.40.70","192.168.40.71","192.168.40.91","192.168.40.92"]
+        hosts_mac_addrs: ["52:54:00:e2:87:5c","52:54:00:e2:87:5d","52:54:00:e2:87:5e","52:54:00:e2:87:5f","52:54:00:e2:87:60","52:54:00:e2:87:61","52:54:00:e2:87:62","52:54:00:e2:87:63","52:54:00:e2:87:64","52:54:00:e2:87:65","52:54:00:e2:87:66","52:54:00:e2:87:70","52:54:00:e2:87:71","52:54:00:e2:87:91","52:54:00:e2:87:92"]
+        hosts_roles: ["dcos-boot","dcos-master","dcos-slave","nfs","k8s","k8s","glusterserver","glusterserver","glusterserver","dcos-slave","k8s","k8s","k8s","generic","generic"]
+        hosts_cluster_if: ["eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0","eth0"]
         bind_local_ip: "{{pxe_server_ip}}"
         bind_local_forwarder: "192.168.0.59"
         #bind_local_forwarder: "192.168.1.254"
