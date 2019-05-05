@@ -1,6 +1,4 @@
-I am creating the PXE server on a OpenSuSE tumbleweed desktop, so everything is Linux... Will use this to setup a DC/OS cluster with this...
-
-
+This project aims to create a PXE guest to install other servers (for now CentOS7 en CoreOS)
 
 The PXE server will contain the following services:
 * Named
@@ -8,15 +6,14 @@ The PXE server will contain the following services:
 * DHCP
 * Nginx
 
-
-## Downloads
+## Variables
 ```bash
 export PXE_STAGE=/opt/stage/pxe
 mkdir -p ${PXE_STAGE}
 cd ${PXE_STAGE}
 export CENTOS_ISO=CentOS-7-x86_64-DVD-1810.iso
 ```
-
+## Downloads
 ```bash
 curl -s http://mirrors.up.pt/pub/centos/7.6.1810/isos/x86_64/CentOS-7-x86_64-DVD-1810.iso -O ${PXE_STAGE}/CentOS-7-x86_64-DVD-1810.iso
 ```
@@ -111,7 +108,7 @@ virsh domblklist pxe
 virsh start pxe
 ```
 
-# execute Ansible playbook to configure the server
+# Execute Ansible playbook to configure the server
 
 ## Adjust the hosts file to the environment you plan to use
 The hosts_names is a list of guest to be installed, the mac addresses should match with the parameter ` --network network=pxe-net,model=virtio,mac=52:54:00:e2:87:5c` in the `virt-install`
@@ -139,7 +136,8 @@ ssh root@192.168.40.10 reboot
 
 # Cleanup
 
-## If need to clean up the pxe server!!!!
+## If need to clean up the pxe server
+
 ```bash
 virsh destroy pxe;virsh undefine pxe;rm -rf ${PXE_STAGE}/guests/pxe/
 ```
@@ -152,7 +150,7 @@ virsh net-undefine pxe-net
 
 Now the guests for the other applications can be created
 
-## Some other commands
+# Some other commands
 
 * Insert a cdrom in the guest drive: `virsh change-media pxe hda --insert /opt/stage/CentOS-7-x86_64-DVD-1708.iso`
 * Eject the cdrom: `virsh attach-disk pxe " " hda --type cdrom --mode readonly`
