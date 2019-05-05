@@ -24,10 +24,10 @@
     path: "/tftpboot"
     state: directory
     
-- name: Copy /usr/share/syslinux/pxelinux.0 to /tftpboot
+- name: Copy /var/lib/tftpboot/pxelinux.0 to /tftpboot
   copy: 
     remote_src: True 
-    src: /usr/share/syslinux/pxelinux.0 
+    src: /var/lib/tftpboot/pxelinux.0 
     dest: /tftpboot
 
 - name: Creates /tftpboot/pxelinux.cfg directory
