@@ -54,7 +54,7 @@ virt-install \
  --network=bridge:pxe-br0,model=virtio,mac=52:54:00:e2:87:5a
 ```
  
-## Install  Linux Centos7
+## Install  Linux Centos7 using VNC
 When the guest boots will present a graphical interface, the PXE server is installed with the minimum packages
 
 To start de installation vncviewer should be used:
@@ -87,7 +87,7 @@ ssh-copy-id root@192.168.40.10
 ssh root@192.168.40.10 shutdown -h now
 ```
 
-## Attach the CDROM to the guest, is will be used to server the installation files 
+## Attach the CDROM to the guest, is will be used to serve the installation files 
 ```bash
 cat > ${PXE_STAGE}/pxe-cdrom.xml <<EOF
 <disk type='block' device='cdrom'>
