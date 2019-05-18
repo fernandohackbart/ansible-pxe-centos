@@ -11,6 +11,6 @@
      - tftp-centos7 
      - tftp-coreos
      - kickstart
-     - ignition
-     - ntp     
+     - ignition     
      - hosts-config
+     - ntp
