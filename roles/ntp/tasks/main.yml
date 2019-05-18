@@ -11,6 +11,7 @@
 
 - name: Configure NTP server to pool.ntp.org
   shell: ntpdate pool.ntp.org
+  ignore_errors: true
     
 - name: Start ntp
   service:
