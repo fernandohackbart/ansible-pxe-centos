@@ -56,11 +56,21 @@
     
   - name: Create /kickstart/config/{{ host_name }}.ks
     template:
-      src: kickstart-k8s
+      src: kickstart-k8s-forwarder-dns
       dest: /kickstart/config/{{ host_name }}.ks
       mode: 0644
     when: 
       - host_role in ["k8s"]    
+      - hosts_use_pxe_dns==false
+      
+  - name: Create /kickstart/config/{{ host_name }}.ks
+    template:
+      src: kickstart-k8s-pxe-dns
+      dest: /kickstart/config/{{ host_name }}.ks
+      mode: 0644
+    when: 
+      - host_role in ["k8s"]
+      - hosts_use_pxe_dns==true
 
   - name: Create /kickstart/config/{{ host_name }}.ks
     template:

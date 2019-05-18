@@ -1,0 +1,53 @@
+#https://www.centos.org/docs/5/html/Installation_Guide-en-US/s1-kickstart2-options.html
+install
+text
+lang {{ hosts_lang }}
+keyboard {{ hosts_keyboard }}
+
+#To use the PXE DNS
+network --bootproto=static --ip={{ host_ip }} --netmask={{ dhcp_network_mask }} --gateway={{ dhcp_router_ip }} --nameserver={{ pxe_server_ip }} --hostname {{ host_name }}.{{ bind_local_zone_name }} --noipv6 --device={{ host_cluster_if }}
+
+#To use the network DNS
+#network --bootproto=static --ip={{ host_ip }} --netmask={{ dhcp_network_mask }} --gateway={{ dhcp_router_ip }} --nameserver={{ bind_local_forwarder }} --hostname {{ host_name }}.{{ bind_local_zone_name }} --noipv6 --device={{ host_cluster_if }}
+
+timezone --utc {{ hosts_time_zone }} 
+selinux --disabled
+firewall --disabled
+services --enabled=sshd
+eula --agreed
+ignoredisk --only-use=vda
+reboot
+
+bootloader --location=mbr
+zerombr
+clearpart --all --initlabel
+part /boot --fstype xfs --size=200
+part pv.01 --size=1 --grow
+volgroup rootvg01 pv.01
+logvol / --fstype xfs --name=lv01 --vgname=rootvg01 --size=1 --grow
+
+rootpw {{ hosts_root_pw }}
+
+url --url http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/install/{{ host_distribution }}/
+
+%packages --nobase --ignoremissing
+@core
+bind-utils
+yum-utils
+nfs-utils
+unzip
+openssl
+%end
+
+%post --log=/var/log/kickstart-post.log
+#!/bin/sh
+groupadd nogroup
+mkdir -p /etc/systemd/system/docker.service.d
+mkdir -p /root/.ssh
+chmod 0700 /root/.ssh
+curl -o /root/.ssh/authorized_keys http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/authorized_keys
+curl -o /etc/ntp.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/ntp.conf
+curl -o /etc/resolv.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/resolv.conf
+curl -o /etc/modules-load.d/overlay.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/overlay.conf
+curl -o /etc/modules-load.d/ip_vs.conf http://{{ kickstart_server_ip }}:{{ kickstart_server_port }}/stage/ip_vs.conf
+%end    
