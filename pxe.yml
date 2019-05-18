@@ -4,7 +4,6 @@
   remote_user: root
   roles:
      - common
-     - ntp
      - bind
 #     - dns-client
      - dhcp    
@@ -13,4 +12,5 @@
      - tftp-coreos
      - kickstart
      - ignition
+     - ntp     
      - hosts-config
