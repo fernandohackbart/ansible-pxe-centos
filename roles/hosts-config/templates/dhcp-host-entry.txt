@@ -5,6 +5,6 @@ host {{ host_name }} {
  option routers {{ dhcp_internal_router_ip }};
  option domain-name-servers {{ bind_local_ip }};
  option domain-name "{{ bind_local_zone_name }}";
- option broadcast-address {{ dhcp_network_broadcast }};
+ option broadcast-address {{ dhcp_internal_broadcast }};
 }
  
