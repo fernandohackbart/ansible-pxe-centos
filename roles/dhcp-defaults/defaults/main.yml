@@ -1,5 +1,6 @@
 ---
-dhcp_router_ip: "192.168.40.1"
+dhcp_internal_router_ip: "192.168.40.1"
+dhcp_external_router_ip: "192.168.40.128"
 dhcp_network_broadcast: "192.168.40.255"
 dhcp_network_subnet: "192.168.40.0"
 dhcp_network_mask: "255.255.255.0"

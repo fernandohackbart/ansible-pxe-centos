@@ -21,4 +21,4 @@
 - name: Enable ntp
   service:
     name: ntpd
-    enabled: yes    
+    enabled: yes

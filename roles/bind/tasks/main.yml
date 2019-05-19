@@ -27,6 +27,11 @@
   service:
     name: named
     state: started
+    
+- name: Restart bind
+  service:
+    name: named
+    state: restarted    
 
 - name: Enable bind
   service:
