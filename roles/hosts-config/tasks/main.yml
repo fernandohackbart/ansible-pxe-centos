@@ -1,5 +1,4 @@
 ---
-
 - name: Creates /tmp/dns-zone-fragments directory
   file: 
     path: "/tmp/dns-zone-fragments"
