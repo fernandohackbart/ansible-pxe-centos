@@ -47,15 +47,15 @@
     group: dhcpd
     mode: 0600      
     
-#- name: Removes /tmp/dns-zone-fragments directory
-#  file: 
-#    path: "/tmp/dns-zone-fragments"
-#    state: absent    
+- name: Removes /tmp/dns-zone-fragments directory
+  file: 
+    path: "/tmp/dns-zone-fragments"
+    state: absent    
 
-#- name: Removes /tmp/dhcp-fragments directory
-#  file: 
-#    path: "/tmp/dhcp-fragments"
-#    state: absent   
+- name: Removes /tmp/dhcp-fragments directory
+  file: 
+    path: "/tmp/dhcp-fragments"
+    state: absent   
 
 - name: Restart bind
   service:
