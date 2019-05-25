@@ -1,4 +1,10 @@
 ---
+- name: Disable SSHD DNS lookups
+  shell: "sed -i 's/#UseDNS yes/UseDNS no/g' /etc/ssh/sshd_config"
+  
+- name: Restart SSHD
+  shell: systemctl restart sshd
+  
 - name: Set hostname to {{ bind_local_hostname }}.{{ bind_local_zone_name }}
   hostname:
     name: "{{ bind_local_hostname }}.{{ bind_local_zone_name }}"
