@@ -31,6 +31,16 @@
      - "{{ hosts_cluster_if }}"
      - "{{ hosts_distribution }}"
      
+- name: Configure external hosts
+  include_tasks: configure-external-host.yml
+  with_together:
+     - "{{ hosts_names }}"
+     - "{{ hosts_external_ips }}"
+     - "{{ hosts_external_mac_addrs }}"  
+     - "{{ hosts_roles }}"
+     - "{{ hosts_external_if }}"
+     - "{{ hosts_distribution }}"
+     
 - name: Adding fragments from /tmp/dns-zone-fragments to /var/named/{{ bind_local_zone_name }}  
   assemble:
     src: /tmp/dns-zone-fragments

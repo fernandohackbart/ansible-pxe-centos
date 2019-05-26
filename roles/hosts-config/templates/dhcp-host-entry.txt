@@ -7,4 +7,3 @@ host {{ host_name }} {
  option domain-name "{{ bind_local_zone_name }}";
  option broadcast-address {{ dhcp_internal_broadcast }};
 }
- 

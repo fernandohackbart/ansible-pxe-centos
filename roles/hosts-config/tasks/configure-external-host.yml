@@ -1,0 +1,22 @@
+---
+- name: Defining variables with the values hostname:{{ item[0] }} ip address:{{ item[1] }} mac address:{{ item[2] }} role:{{ item[3] }} iterface:{{ item[4] }} distribution:{{ item[5] }}
+  set_fact:
+    host_name: "{{ item[0] }}"
+    host_external_ip: "{{ item[1] }}"
+    host_external_mac_addr: "{{ item[2] }}"
+    host_role: "{{ item[3] }}"
+    host_external_if: "{{ item[4] }}"
+    host_distribution: "{{ item[5] }}"
+  
+###################################################################################################################  
+- name: Create fragment for host {{ host_name }} at /tmp/dns-zone-fragments/{{ host_name }}
+  template:
+    src: dns-external-zone-entry.txt
+    dest: /tmp/dns-zone-fragments/2-{{ host_name }}-external
+    mode: 0644
+    
+- name: Create fragment for host {{ host_name }} at /tmp/dhcp-fragments/{{ host_name }}
+  template:
+    src: dhcp-external-host-entry.txt
+    dest: /tmp/dhcp-fragments/2-{{ host_name }}-external
+    mode: 0644
