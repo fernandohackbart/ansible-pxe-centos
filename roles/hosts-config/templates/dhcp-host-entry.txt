@@ -5,7 +5,5 @@ host {{ host_name }} {
  option routers {{ dhcp_local_router_ip }};
  option domain-name-servers {{ bind_local_ip }};
  option domain-name "{{ bind_local_zone_name }}";
- option broadcast-address {{ dhcp_local_broadcast }};
- option rfc3442-classless-static-routes code 121 = array of integer 8;
- option rfc3442-classless-static-routes {{dhcp_local_route_internal}};  
+ option broadcast-address {{ dhcp_local_broadcast }}; 
 }
