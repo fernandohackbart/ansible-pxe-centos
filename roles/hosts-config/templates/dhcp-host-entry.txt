@@ -2,8 +2,10 @@ host {{ host_name }} {
  hardware ethernet {{ host_mac_addr }};
  fixed-address {{ host_ip }};
  option host-name "{{ host_name }}.{{ bind_local_zone_name }}"; 
- option routers {{ dhcp_internal_router_ip }};
+ option routers {{ dhcp_local_router_ip }};
  option domain-name-servers {{ bind_local_ip }};
  option domain-name "{{ bind_local_zone_name }}";
- option broadcast-address {{ dhcp_internal_broadcast }};
+ option broadcast-address {{ dhcp_local_broadcast }};
+ option rfc3442-classless-static-routes code 121 = array of integer 8;
+ option rfc3442-classless-static-routes {{dhcp_local_route_internal}};  
 }
