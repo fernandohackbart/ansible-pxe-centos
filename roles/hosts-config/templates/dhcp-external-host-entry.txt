@@ -1,3 +1,4 @@
+
 host {{ host_name }}-ext {
  hardware ethernet {{ host_external_mac_addr }};
  fixed-address {{ host_external_ip }};
@@ -6,5 +7,4 @@ host {{ host_name }}-ext {
  option domain-name-servers {{ bind_local_ip }};
  option domain-name "{{ bind_local_zone_name }}";
  option broadcast-address {{ dhcp_external_broadcast }};
-}
- 
+} 
